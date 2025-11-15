@@ -106,7 +106,7 @@ server.registerTool(
   {
     title: "New task",
     description: "Run Gemini CLI agent to complete a task",
-    inputSchema: {
+    inputSchema: z.object({
       task: z
         .string()
         .describe("The task to delegate, keep it close to original user query"),
@@ -119,7 +119,7 @@ server.registerTool(
         .string()
         .optional()
         .describe("Continue in a previous conversation history"),
-    },
+    }),
   },
   async ({ task, cwd, historyId }) => {
     if (!fs.existsSync(cwd)) {
