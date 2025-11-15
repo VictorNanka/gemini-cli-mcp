@@ -19,18 +19,31 @@ const server = new McpServer(
 
 interface GeminiStreamEvent {
   type: string
-  text?: string
-  toolName?: string
-  args?: unknown
-  result?: string
-  error?: string
+  // init event
+  session_id?: string
+  timestamp?: string
+  model?: string
+  // message event
+  role?: string
+  content?: string
+  delta?: boolean
+  // result event
+  status?: string
+  stats?: {
+    total_tokens?: number
+    input_tokens?: number
+    output_tokens?: number
+    duration_ms?: number
+    tool_calls?: number
+  }
+  total_cost_usd?: number
 }
 
 async function runGeminiCLI(
   task: string,
   cwd: string,
   historyId?: string
-): Promise<{ result: string; historyId?: string }> {
+): Promise<{ result: string; session_id?: string; total_cost_usd?: number }> {
   const args = ["-p", task, "--output-format", "stream-json"]
 
   if (historyId) {
@@ -45,8 +58,9 @@ async function runGeminiCLI(
 
     let stdout = ""
     let stderr = ""
-    let lastText = ""
-    let currentHistoryId: string | undefined
+    let assistantContent = ""
+    let sessionId: string | undefined
+    let totalCostUsd: number | undefined
 
     gemini.stdout.on("data", (data) => {
       const chunk = data.toString()
@@ -63,10 +77,14 @@ async function runGeminiCLI(
             data: `${line}`,
           })
 
-          if (event.type === "text" && event.text) {
-            lastText += event.text
-          } else if (event.type === "historyId") {
-            currentHistoryId = event.result
+          if (event.type === "init" && event.session_id) {
+            sessionId = event.session_id
+          } else if (event.type === "message" && event.role === "assistant" && event.content) {
+            assistantContent += event.content
+          } else if (event.type === "result") {
+            if (event.total_cost_usd !== undefined) {
+              totalCostUsd = event.total_cost_usd
+            }
           }
         } catch (e) {
           // Ignore JSON parse errors for partial lines
@@ -85,8 +103,9 @@ async function runGeminiCLI(
     gemini.on("close", (code) => {
       if (code === 0) {
         resolve({
-          result: lastText || stdout,
-          historyId: currentHistoryId,
+          result: assistantContent || stdout,
+          session_id: sessionId,
+          total_cost_usd: totalCostUsd,
         })
       } else {
         reject(
@@ -118,7 +137,7 @@ server.registerTool(
       historyId: z
         .string()
         .optional()
-        .describe("Continue in a previous conversation history"),
+        .describe("Continue from a previous session (session_id from previous response)"),
     },
   },
   async ({ task, cwd, historyId }) => {

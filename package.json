@@ -1,7 +1,7 @@
 {
   "name": "@victornanka/gemini-cli-mcp",
   "type": "module",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "MCP server for delegating tasks to Gemini CLI",
   "bin": "./cli.js",
   "scripts": {
