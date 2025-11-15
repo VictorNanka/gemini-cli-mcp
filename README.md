@@ -1,4 +1,4 @@
-# gemini-cli-mcp
+# @victornanka/gemini-cli-mcp
 
 MCP server for delegating tasks to Gemini CLI. This allows you to invoke Gemini CLI agent capabilities from other MCP-enabled tools.
 
@@ -18,7 +18,7 @@ Add to your `~/.gemini/settings.json`:
   "mcpServers": {
     "gemini-delegate": {
       "command": "bunx",
-      "args": ["gemini-cli-mcp@latest"]
+      "args": ["@victornanka/gemini-cli-mcp@latest"]
     }
   }
 }
@@ -33,7 +33,7 @@ Add to your Claude Code MCP configuration:
   "mcpServers": {
     "gemini-cli-mcp": {
       "command": "bunx",
-      "args": ["gemini-cli-mcp@latest"]
+      "args": ["@victornanka/gemini-cli-mcp@latest"]
     }
   }
 }
