@@ -1,5 +1,5 @@
 {
-  "name": "gemini-cli-mcp",
+  "name": "@victornanka/gemini-cli-mcp",
   "type": "module",
   "version": "0.1.0",
   "description": "MCP server for delegating tasks to Gemini CLI",

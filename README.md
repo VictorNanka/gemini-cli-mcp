@@ -18,7 +18,7 @@ Add to your `~/.gemini/settings.json`:
   "mcpServers": {
     "gemini-delegate": {
       "command": "bunx",
-      "args": ["gemini-cli-mcp@latest"]
+      "args": ["@victornanka/gemini-cli-mcp@latest"]
     }
   }
 }
@@ -33,7 +33,7 @@ Add to your Claude Code MCP configuration:
   "mcpServers": {
     "gemini-cli-mcp": {
       "command": "bunx",
-      "args": ["gemini-cli-mcp@latest"]
+      "args": ["@victornanka/gemini-cli-mcp@latest"]
     }
   }
 }
