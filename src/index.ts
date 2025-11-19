@@ -50,6 +50,19 @@ async function runGeminiCLI(
     args.push("--history-id", historyId)
   }
 
+  // Hardcoded allowed tools for gemini-cli
+  const allowedTools = [
+    "read_file",
+    "write_file",
+    "edit",
+    "run_shell_command",
+    "web_fetch",
+    "google_web_search",
+    "save_memory",
+    "write_todos",
+  ]
+  args.push("--allowed-tools", allowedTools.join(","))
+
   return new Promise((resolve, reject) => {
     const gemini = spawn("gemini", args, {
       cwd,
