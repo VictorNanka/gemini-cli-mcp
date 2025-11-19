@@ -42,12 +42,17 @@ interface GeminiStreamEvent {
 async function runGeminiCLI(
   task: string,
   cwd: string,
-  historyId?: string
+  historyId?: string,
+  allowedTools?: string[]
 ): Promise<{ result: string; session_id?: string; total_cost_usd?: number }> {
   const args = ["-p", task, "--output-format", "stream-json"]
 
   if (historyId) {
     args.push("--history-id", historyId)
+  }
+
+  if (allowedTools && allowedTools.length > 0) {
+    args.push("--allowed-tools", allowedTools.join(","))
   }
 
   return new Promise((resolve, reject) => {
@@ -138,15 +143,21 @@ server.registerTool(
         .string()
         .optional()
         .describe("Continue from a previous session (session_id from previous response)"),
+      allowedTools: z
+        .array(z.string())
+        .optional()
+        .describe(
+          "List of allowed gemini-cli tools. Available tools: read_file, write_file, edit, run_shell_command, web_fetch, google_web_search, save_memory, write_todos"
+        ),
     },
   },
-  async ({ task, cwd, historyId }) => {
+  async ({ task, cwd, historyId, allowedTools }) => {
     if (!fs.existsSync(cwd)) {
       throw new Error(`Directory ${cwd} does not exist`)
     }
 
     try {
-      const result = await runGeminiCLI(task, cwd, historyId)
+      const result = await runGeminiCLI(task, cwd, historyId, allowedTools)
 
       return {
         content: [
