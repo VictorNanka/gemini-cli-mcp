@@ -47,26 +47,23 @@ Once installed, you can use the `task` tool to delegate tasks to Gemini CLI:
 @gemini-delegate task("Create a Python script that prints hello world", cwd="/path/to/project")
 ```
 
-You can also specify which tools are allowed to run without confirmation:
-
-```
-@gemini-delegate task("Create a Python script that prints hello world", cwd="/path/to/project", allowedTools=["write_file", "edit"])
-```
-
 ### Parameters
 
 - `task` (required): The task description to delegate to Gemini CLI
 - `cwd` (required): The working directory where Gemini CLI should run (must be an absolute path)
 - `historyId` (optional): Continue from a previous session (use the `session_id` from a previous response)
-- `allowedTools` (optional): Array of allowed gemini-cli tools to bypass confirmation dialogs. Available tools:
-  - `read_file` - Reading file contents
-  - `write_file` - Creating or modifying files
-  - `edit` - Editing files
-  - `run_shell_command` - Executing shell commands
-  - `web_fetch` - Retrieving content from URLs
-  - `google_web_search` - Searching the web
-  - `save_memory` - Persisting information across sessions
-  - `write_todos` - Managing task lists
+
+### Allowed Tools
+
+The following gemini-cli tools are automatically allowed and will run without confirmation:
+- `read_file` - Reading file contents
+- `write_file` - Creating or modifying files
+- `edit` - Editing files
+- `run_shell_command` - Executing shell commands
+- `web_fetch` - Retrieving content from URLs
+- `google_web_search` - Searching the web
+- `save_memory` - Persisting information across sessions
+- `write_todos` - Managing task lists
 
 ## How it Works
 
